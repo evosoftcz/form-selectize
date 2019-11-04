@@ -10,6 +10,7 @@ namespace App\Form\Control;
 
 use Nette;
 use Nette\PhpGenerator as Code;
+use Nette\Schema\Expect;
 
 /**
  * Description of ControlsExtension
@@ -18,44 +19,32 @@ use Nette\PhpGenerator as Code;
  */
 class SelectizeExtension extends Nette\DI\CompilerExtension
 {
-	
-	private $defaults =  [
-	    'mode' => 'full',
-	    'create' => true,
-	    'maxItems' => null,
-	    'delimiter' => '#/',
-	    'plugins' => ['remove_button'],
-	    'valueField' => 'id',
-	    'labelField' => 'name',
-	    'searchField' => 'name'
-	];
-	
-//	public function loadConfiguration()
-//	{
-//		$config = $this->getConfig($this->defaults);
-//		$builder = $this->getContainerBuilder();
-//		$builder->addDefinition($this->prefix('selectize'))
-//			->setClass('\App\Form\Control\Selectize');
-//	}
 
-	
+    /**
+     * @return Nette\Schema\Schema
+     */
+    public function getConfigSchema(): Nette\Schema\Schema
+    {
+        return Expect::structure([
+             'mode' => Expect::string('full')->dynamic(),
+             'create' => Expect::bool(true)->dynamic(),
+             'maxItems' => Expect::int()->dynamic(),
+             'delimiter' => Expect::string('#/')->dynamic(),
+             'plugins' => Expect::array()->default(['remove_button']),
+             'valueField' => Expect::string('id')->dynamic(),
+             'labelField' => Expect::string('name')->dynamic(),
+             'searchField' => Expect::string('name')->dynamic(),
+         ])->castTo('array');
+    }
+
+    /**
+     * @param Code\ClassType $class
+     */
 	public function afterCompile(Code\ClassType $class)
-	{
+    {
 		parent::afterCompile($class);
-
 		$init = $class->methods['initialize'];
-		$config = $this->getConfig($this->defaults);
-		$init->addBody('\App\Form\Control\Selectize::register(?, ?);', ['addSelectize', $config]);
+		$init->addBody('\App\Form\Control\Selectize::register(?, ?);', ['addSelectize', $this->config]);
 	}
-	
-	
-	/**
-	 * @param \Nette\Configurator $configurator
-	 */
-//	public static function register(Nette\Configurator $configurator)
-//	{
-//		$configurator->onCompile[] = function ($config, Nette\DI\Compiler $compiler) {
-//			$compiler->addExtension('selectizeExtension', new Selectize());
-//		};
-//	}
+
 }

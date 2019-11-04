@@ -38,8 +38,6 @@ SelectizeForNette.prototype = {
 
     constructor: SelectizeForNette,
 
-    minSearchLength: 3,
-
     init: function()
     {
         var base = this;
@@ -87,16 +85,37 @@ SelectizeForNette.prototype = {
     create: function()
     {
         var base = this;
+
         if (typeof this.settings.ajaxURL !== 'undefined') {
             if (typeof this.customAjax !== "undefined") {
                 this.options.load = this.customAjax.call(this, this.options, this.settings.ajaxURL);
 
             } else {
+
                 this.options.load = function(query, callback) {
-                    if (!query.length || query.length < this.minSearchLength) return callback();
+                    if (!query.length || query.length < 3) {
+                        return callback();
+                    }
+
+                    var depended_attribute_value = null;
+
+                    if (base.element[0].dataset.dependedAttribute !== undefined) {
+                        var els = document.getElementsByName(base.element[0].dataset.dependedAttribute);
+                        if (els.length === 1) {
+                            var el = els[0];
+                            depended_attribute_value = el.value;
+                            //
+                            // var el_selectize = el.selectize;
+                            // if (el_selectize !== undefined) {
+                            //     el_selectize.refreshItems();
+                            // }
+
+                        }
+                    }
+
                     $.ajax({
                         url: base.settings.ajaxURL,
-                        data: {query: query},
+                        data: {query: query, dv: depended_attribute_value},
                         type: 'GET',
                         error: function() {
                             console.error('AJAX error');
@@ -143,4 +162,70 @@ function selectize(selector, customSettings)
         var mySelectize = new SelectizeForNette($(this), customSettings);
         mySelectize.create();
     });
+}
+
+var settings = {
+    customRender: function (options) {
+        return {
+            item: function(item, escape) {
+                return '<div>'
+                    + (item['enabled'] === false ? '<i class="fas fa-exclamation" style="color: #9f1818"></i>' : '')
+                    + '<span>' + escape(item[options.labelField]) + '</span> '
+                    + '</div>';
+            },
+            option: function(item, escape) {
+                return '<div>'
+                    + (item['enabled'] === false ? '<i class="fas fa-exclamation" style="color: #9f1818"></i>' : '')
+                    + '<span>' + escape(item[options.labelField]) + '</span><br> '
+                    + '</div>';
+            }
+        }
+    }
+};
+
+var settings_code = {
+    customRender: function (options) {
+        return {
+            item: function(item, escape) {
+                return '<div>'
+                    + (item['enabled'] === false ? '<i class="fas fa-exclamation" style="color: #9f1818"></i>' : '')
+                    + (item['code'] !== undefined ? '<span class="selectize-item-small selectize-code">' + item['code'] + '</span>' : '')
+                    + '<span>' + escape(item[options.labelField]) + '</span> '
+                    + '</div>';
+            },
+            option: function(item, escape) {
+                return '<div>'
+                    + (item['enabled'] === false ? '<i class="fas fa-exclamation" style="color: #9f1818"></i>' : '')
+                    + '<span>' + escape(item[options.labelField]) + '</span><br> '
+                    + (item['code'] !== undefined ? '<span class="selectize-item-small selectize-code">' + item['code'] + '</span>' : '')
+                    + '</div>';
+            }
+        }
+    }
+};
+
+
+selectize('.selectize', settings);
+selectize('.selectize-code', settings_code);
+
+
+var el = document.getElementsByClassName('selectize-to-disable');
+for (var i = 0; i < el.length - 1; i++) {
+    var input = el[i].selectize;
+    if (input !== undefined) {
+        input.disable();
+    }
+}
+
+var el = document.getElementsByClassName('selectize-to-lock');
+for (var i = 0; i < el.length - 1; i++) {
+    var input = el[i].selectize;
+    if (input !== undefined) {
+        input.lock();
+        var control_input = input.$control_input;
+
+        var input_selectized = document.getElementById(control_input[0].id);
+        var parent = input_selectized.parentNode;
+        parent.style.backgroundColor = '#eeeeee';
+    }
 }

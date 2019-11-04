@@ -8,135 +8,199 @@
 
 namespace App\Form\Control;
 
-use Doctrine\ORM\PersistentCollection;
-use Kdyby\Doctrine\Collections\ReadOnlyCollectionWrapper;
-use Nette;
+use Nette\Forms\Container;
+use Nette\Forms\Controls\BaseControl;
 use Nette\Forms\Form;
+use Nette\Forms\Helpers;
+use Nette\Forms\Rules;
+use Nette\Utils\Strings;
 
 /**
  * Description of Selectize
  *
  * @author Petr Olišar <petr.olisar@gmail.com>
  */
-class Selectize extends Nette\Forms\Controls\BaseControl
-{
-	private $entity;
-	private $labelName;
-	private $selectize;
-	private $selectizeBack;
-	private $options;
-	private $prompt = FALSE;
+class Selectize extends BaseControl {
+
+    private $entity;
+    private $labelName;
+    private $selectize;
+    private $selectizeBack;
+    private $options;
+    private $prompt = FALSE;
+
+    /**
+     * @var Rules
+     */
+    private $original_rules;
+
+    /**
+     * @var string
+     */
+    private $selectizeClass = 'selectize show-hidden-error';
 
 
-	public function __construct($label = null, array $entity = NULL, array $config = NULL)
-	{
-		parent::__construct($label);
-		$this->entity = is_null($entity) ? [] : $entity;
-		$this->labelName = $label;
-		$this->options = $config;
-	}
+    public function __construct($label = null, array $entity = NULL, array $config = NULL) {
+        parent::__construct($label);
+        $this->entity = is_null($entity) ? [] : $entity;
+        $this->labelName = $label;
+        $this->options = $config;
+        $this->selectizeClass = 'selectize show-hidden-error';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectizeClass(): string {
+        return $this->selectizeClass;
+    }
+
+    /**
+     * @param string $selectizeClass
+     * @return Selectize
+     */
+    public function setSelectizeClass(string $selectizeClass): Selectize
+    {
+        $this->selectizeClass = $selectizeClass . ' show-hidden-error';
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getOriginalRules() {
+        return $this->original_rules;
+    }
+
+    /**
+     * @param Rules $original_rules
+     * @return Selectize
+     */
+    private function setOriginalRules(Rules $original_rules): Selectize {
+        $this->original_rules = $original_rules;
+        return $this;
+    }
 
 
-	public function setOptions(array $options)
-	{
-		foreach($options as $key => $value)
-		{
-			$this->options[$key] = $value;
-		}
-		return $this;
-	}
+    /**
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options) {
+        foreach ($options as $key => $value) {
+            $this->options[$key] = $value;
+        }
+        return $this;
+    }
+
+    /**
+     * @param string $mode
+     * @return $this
+     */
+    public function setMode(string $mode) {
+        $this->options['mode'] = $mode;
+        return $this;
+    }
+
+    /**
+     * @param bool $create
+     * @return $this
+     */
+    public function setCreate(bool $create) {
+        $this->options['create'] = $create;
+        return $this;
+    }
+
+    /**
+     * @param int $items
+     * @return $this
+     */
+    public function maxItems(int $items) {
+        $this->options['maxItems'] = $items;
+        return $this;
+    }
+
+    /**
+     * @param string $delimiter
+     * @return $this
+     */
+    public function setDelimiter(string $delimiter) {
+        $this->options['delimiter'] = $delimiter;
+        return $this;
+    }
+
+    /**
+     * @param array $plugins
+     * @return $this
+     */
+    public function setPlugins(array $plugins) {
+        $this->options['plugins'] = $plugins;
+        return $this;
+    }
+
+    /**
+     * @param string $valueField
+     * @return $this
+     */
+    public function setValueField(string $valueField) {
+        $this->options['valueField'] = $valueField;
+        return $this;
+    }
+
+    /**
+     * @param string $labelField
+     * @return $this
+     */
+    public function setLabelField(string $labelField) {
+        $this->options['labelField'] = $labelField;
+        return $this;
+    }
+
+    /**
+     * @param array $searchField
+     * @return $this
+     */
+    public function setSearchField(array $searchField) {
+        $this->options['searchField'] = $searchField;
+        return $this;
+    }
+
+    /**
+     * @param string $class
+     * @return $this
+     */
+    public function setClass(string $class) {
+        $this->options['class'] = $class;
+        return $this;
+    }
+
+    /**
+     * @param string $ajaxURL
+     * @return $this
+     */
+    public function setAjaxURL(string $ajaxURL) {
+        $this->options['ajaxURL'] = $ajaxURL;
+        return $this;
+    }
 
 
-	public function setMode($mode)
-	{
-		$this->options['mode'] = $mode;
-		return $this;
-	}
+    /**
+     * @param string $prompt
+     * @return $this
+     */
+    public function setPrompt(string $prompt) {
+        $this->prompt = $prompt;
+        return $this;
+    }
 
 
-	public function setCreate($create)
-	{
-		$this->options['create'] = $create;
-		return $this;
-	}
-
-
-	public function maxItems($items)
-	{
-		$this->options['maxItems'] = $items;
-		return $this;
-	}
-
-
-	public function setDelimiter($delimiter)
-	{
-		$this->options['delimiter'] = $delimiter;
-		return $this;
-	}
-
-
-	public function setPlugins(array $plugins)
-	{
-		$this->options['plugins'] = $plugins;
-		return $this;
-	}
-
-
-	public function setValueField($valueField)
-	{
-		$this->options['valueField'] = $valueField;
-		return $this;
-	}
-
-
-	public function setLabelField($labelField)
-	{
-		$this->options['labelField'] = $labelField;
-		return $this;
-	}
-
-
-	public function setSearchField($searchField)
-	{
-		$this->options['searchField'] = $searchField;
-		return $this;
-	}
-
-
-	public function setClass($class)
-	{
-		$this->options['class'] = $class;
-		return $this;
-	}
-
-
-	public function setAjaxURL($ajaxURL)
-	{
-		$this->options['ajaxURL'] = $ajaxURL;
-		return $this;
-	}
-
-
-	/**
-	 * Sets first prompt item in select box.
-	 * @param  string
-	 * @return self
-	 */
-	public function setPrompt($prompt)
-	{
-		$this->prompt = $prompt;
-		return $this;
-	}
-
-
-	/**
-	 * Returns first prompt item?
-	 * @return mixed
-	 */
-	public function getPrompt()
-	{
-		return $this->prompt;
-	}
+    /**
+     * Returns first prompt item?
+     * @return mixed
+     */
+    public function getPrompt() {
+        return $this->prompt;
+    }
 
 
     /**
@@ -144,119 +208,122 @@ class Selectize extends Nette\Forms\Controls\BaseControl
      * @param array $items
      * @return array
      */
-    public function setItems(array $items)
-    {
+    public function setItems(array $items) {
         return $this->entity = $items;
     }
 
-	
-	/**
-	* Gets items
-	* @return array
-	*/
-	public function getItems() {
+
+    /**
+     * Gets items
+     * @return array
+     */
+    public function getItems() {
         return $this->entity;
-	}
-    
-
-	public function setValue($value)
-	{
-		if(!is_null($value))
-		{
-			if ($value instanceof Nette\Database\Table\Selection)
-			{
-				throw new Nette\InvalidArgumentException("Type must be array, instance of Nette\\Database\\Table\\Selection was given. Try Selection::fetchAssoc(\$key)");
-			}
-
-			if(is_array($value) || $value instanceof ReadOnlyCollectionWrapper || $value instanceof PersistentCollection)
-			{
-				$i = 0;
-				foreach($value as $key => $slug)
-				{
-					$i++;
-					$idName = $this->options['valueField'];
-					$this->selectizeBack .= isset($slug->$idName) ? $slug->$idName : $key;
-
-					if($i < count($value))
-					{
-						$this->selectizeBack .= $this->options['delimiter'];
-					}
-				}
-			} else
-			{
-				$this->selectizeBack = $value;
-			}
-		}
-
-		$this->selectize = $this->selectizeBack;
-	}
+    }
 
 
-	public function getValue()
-	{
-		if (is_array($this->selectize) && count($this->selectize) === 0) {
-			return null;
-		}
-		return $this->selectize;
-	}
+    /**
+     * @param mixed $value
+     * @return BaseControl|void
+     */
+    public function setValue($value) {
+        if (!is_null($value)) {
+            if (is_array($value)) {
+                $i = 0;
+                foreach ($value as $key => $slug) {
+                    $i++;
+                    $idName = $this->options['valueField'];
+                    $this->selectizeBack .= isset($slug->$idName) ? $slug->$idName : $key;
 
+                    if ($i < count($value)) {
+                        $this->selectizeBack .= $this->options['delimiter'];
+                    }
+                }
+            } else {
+                $this->selectizeBack = $value;
+            }
+        }
 
-	public function loadHttpData()
-	{
-		if($this->options['mode'] === 'select')
-		{
-			$value = $this->getHttpData(Form::DATA_LINE);
-			if($value === "")
-			{
-				$value = NULL;
-			}
-			$this->selectizeBack = $this->selectize = $value;
-		} else
-		{
-			$this->prepareData();
-		}
-	}
+        $this->selectize = $this->selectizeBack;
+    }
 
+    /**
+     * @return mixed|null
+     */
+    public function getValue() {
+        return @count($this->selectize) ? $this->selectize : NULL; // @ because of php7.2
+    }
 
-	public function getControl()
-	{
-		$this->setOption('rendered', TRUE);
-		$name = $this->getHtmlName();
+    /**
+     *
+     */
+    public function loadHttpData(): void {
+        if ($this->options['mode'] === 'select') {
+            $value = $this->getHttpData(Form::DATA_LINE);
+            if ($value === "") {
+                $value = NULL;
+            }
+            $this->selectizeBack = $this->selectize = $value;
+        } else {
+            $this->prepareData();
+        }
+    }
+
+    /**
+     * @return \Nette\Utils\Html|string
+     */
+    public function getControl() {
+
+        $this->setOption('rendered', TRUE);
+        $name = $this->getHtmlName();
         $el = clone $this->control;
-        if (array_key_exists('ajaxURL', $this->options))
-        {
+        $this->setOriginalRules($this->getRules());
+        if (array_key_exists('ajaxURL', $this->options)) {
             $this->entity = $this->findActiveValue($this->entity, $this->options['valueField'], $this->selectizeBack);
         }
-        if($this->options['mode'] === 'full')
-		{
-			return $el->addAttributes([
-				'id' => $this->getHtmlId(),
-				'type' => 'text',
-				'name' => $name,
-				'class' => array(isset($this->options['class']) ? $this->options['class'] : 'selectize' . ' form-control text'),
-				'data-entity' => $this->entity,
-				'data-options' => $this->options,
-				'value' => $this->selectizeBack
-			]);
-		} elseif ($this->options['mode'] === 'select')
-		{
-			$this->entity = $this->prompt === FALSE ?
-				$this->entity : self::arrayUnshiftAssoc($this->entity, '', $this->translate($this->prompt));
-			return Nette\Forms\Helpers::createSelectBox($this->entity, [
-					'selected?' => $this->selectizeBack
-				])
-				->id($this->getHtmlId())
-				->name($name)
-				->data('entity', $this->entity)
-				->data('options', $this->options)
-				->class(isset($this->options['class']) ? $this->options['class'] : 'selectize' . ' form-control')
-				->addAttributes(parent::getControl()->attrs)
-                		->setValue($this->selectizeBack);
-		}
-	}
 
-    function findActiveValue($array, $key, $value)
-    {
+        $orig_attributes = parent::getControl()->attrs;
+        $required = $orig_attributes['required'];
+        $disabled = $orig_attributes['disabled'];
+        $autocomplete = isset($orig_attributes['autocomplete']) ? $orig_attributes['autocomplete'] : null;
+        $rules = isset($orig_attributes['data-nette-rules']) ? $orig_attributes['data-nette-rules'] : null;
+        $class = isset($orig_attributes['class']) ? $orig_attributes['class'] : null;
+
+        if ($this->options['mode'] === 'full') {
+
+            return $el->addAttributes(['id' => $this->getHtmlId(),
+                'type' => 'text',
+                'name' => $name,
+                'class' => array(isset($this->options['class']) ? $this->options['class'] : '' . ' ' . $class . ' ' . $this->selectizeClass . ' ' . ' text '),
+                'data-entity' => $this->entity,
+                'data-options' => $this->options,
+                'value' => $this->selectizeBack,
+                'data-nette-rules' => $rules,
+                'required' => $required,
+                'disabled' => $disabled,
+                'autocomplete' => $autocomplete]);
+        } else {
+
+            $this->entity = $this->prompt === FALSE ? $this->entity : self::arrayUnshiftAssoc($this->entity, '', $this->translate($this->prompt));
+            $x = Helpers::createSelectBox($this->entity, ['selected?' => $this->selectizeBack])
+                ->id($this->getHtmlId())
+                ->name($name)
+                ->data('entity', $this->entity)
+                ->data('options', $this->options)
+                ->addAttributes(parent::getControl()->attrs)
+                ->setValue($this->selectizeBack);
+
+            return $x->class(isset($this->options['class']) ? $this->options['class'] : '' . ' ' . $class . ' ' . $this->selectizeClass . ' ');
+        }
+    }
+
+    /**
+     * @param array|string $array
+     * @param string      $key
+     * @param string|null $value
+     * @return array
+     */
+    function findActiveValue($array, string $key, ?string $value) {
         $results = array();
 
         if (is_array($array)) {
@@ -273,76 +340,91 @@ class Selectize extends Nette\Forms\Controls\BaseControl
     }
 
 
-	private static function arrayUnshiftAssoc(&$arr, $key, $val)
-	{
-		$arr = array_reverse($arr, true);
-		$arr[$key] = $val;
-		return array_reverse($arr, true);
-	}
+    /**
+     * @param array  $arr
+     * @param string $key
+     * @param string $val
+     * @return array
+     */
+    private static function arrayUnshiftAssoc(array &$arr, string $key, string $val) {
+        $arr = array_reverse($arr, true);
+        $arr[$key] = $val;
+        return array_reverse($arr, true);
+    }
 
 
-	private function prepareData()
-	{
-		$this->selectize = $this->split($this->getHttpData(Form::DATA_LINE));
-		$this->selectizeBack = $this->getHttpData(Form::DATA_LINE);
-		$iteration = false;
-		foreach($this->selectize as $key => $value)
-		{
-			if(!$this->myInArray($this->entity, $value, $this->options['valueField']))
-			{
-				$iteration ?: $this->selectize['new'] = [];
-				array_push($this->entity, [$this->options['valueField'] => $value, 'name' => $value]);
-				array_push($this->selectize['new'], $value);
-				unset($this->selectize[$key]);
-				$iteration = true;
-			}
-		}
-	}
+    /**
+     *
+     */
+    private function prepareData() {
+        $this->selectize = $this->split($this->getHttpData(Form::DATA_LINE));
+        $this->selectizeBack = $this->getHttpData(Form::DATA_LINE);
+        $iteration = false;
+        foreach ($this->selectize as $key => $value) {
+            if (!$this->myInArray($this->entity, $value, $this->options['valueField'])) {
+                $iteration ?: $this->selectize['new'] = [];
+                array_push($this->entity, [$this->options['valueField'] => $value, 'name' => $value]);
+                array_push($this->selectize['new'], $value);
+                unset($this->selectize[$key]);
+                $iteration = true;
+            }
+        }
+    }
+
+    /**
+     * @param string|null $selectize
+     * @return array
+     */
+    private function split(?string $selectize) {
+        $return = Strings::split($selectize, '~' . $this->options['delimiter'] . '\s*~');
+        return $return[0] === "" ? [] : $return;
+    }
 
 
-	private function split($selectize)
-	{
-		$return = Nette\Utils\Strings::split($selectize, '~'.$this->options['delimiter'].'\s*~');
-		return $return[0] === "" ? [] : $return;
-	}
+    /**
+     * @param array  $array
+     * @param string $value
+     * @param string $key
+     * @return bool
+     */
+    private function myInArray(array $array, string $value, string $key) {
+        if (isset($array[$key]) AND $array[$key] == $value) {
+            return true;
+        }
 
+        foreach ($array as $val) {
+            if (is_array($val)) {
+                if ($this->myInArray($val, $value, $key)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-	/**
-	 *
-	 * @author <brouwer.p@gmail.com>
-	 * @param array $array
-	 * @param string|int $value
-	 * @param string|int $key
-	 * @return boolean
-	 */
-	private function myInArray(array $array, $value, $key)
-	{
-		if(isset($array[$key]) AND $array[$key]==$value)
-		{
-			return true;
-		}
+    /**
+     * @param string $method
+     * @param array  $config
+     */
+    public static function register(string $method = 'addSelectize', array $config) {
 
-		foreach ($array as $val)
-		{
-			if (is_array($val))
-			{
-				if($this->myInArray($val,$value,$key))
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-	public static function register($method = 'addSelectize', $config)
-	{
-		Nette\Forms\Container::extensionMethod($method, function(Nette\Forms\Container $container, $name, $label, $entity = null, array $options = null) use ($config)
-		{
-			$container[$name] = new Selectize($label, $entity, is_array($options) ?
-				array_replace($config, $options) : $config);
-			return $container[$name];
-		});
-	}
+        Container::extensionMethod(
+            $method,
+            function (
+                Container $container,
+                $name,
+                $label,
+                $entity = null,
+                array $options = null
+            ) use ($config) {
+                $component = new Selectize(
+                    $label,
+                    $entity,
+                    is_array($options) ? array_replace($config, $options) : $config
+                );
+                $container->addComponent($component, $name);
+                return $component;
+            }
+        );
+    }
 }

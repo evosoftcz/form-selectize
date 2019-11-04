@@ -1,8 +1,6 @@
 form-selectize
 ==============
 
-[![Latest stable](https://img.shields.io/packagist/v/olicek/form-selectize.svg)](https://packagist.org/packages/olicek/form-selectize) [![Packagist](https://img.shields.io/packagist/dt/olicek/form-selectize.svg)](https://packagist.org/packages/olicek/form-selectize)
-
 Form extension for Nette framework
 
 ## More documentations
@@ -12,30 +10,36 @@ Form extension for Nette framework
 
 ## Requirements
 
-* Nette 2.2+
+* Nette 3.0
+* PHP 7.2+
 * jQuery 1.8+
-* [Selectize] (https://github.com/brianreavis/selectize.js)
+* Selectize.js - included with more features
 
 ## Installation
 
-The best way to install olicek/form-selectize is using  [Composer](http://getcomposer.org/):
+The best way to install evosoftcz/form-selectize is using  [Composer](http://getcomposer.org/):
 
 ```sh
-$ composer require olicek/form-selectize
+    "repositories": [
+		{
+			"url": "https://github.com/evosoftcz/form-selectize.git",
+			"type": "git"
+		}
+	],
+    "require": {
+		"evosoftcz/form-selectize": "^2.0"
+	},
 ```
 
 After installation server site, you have to install client site. 
-The best way is use [bower](http://bower.io/search/?q=selectize-for-nette).
 
-Link `selectize.js` from **client-side** and original `selectize.js` and call somewhere function `selectize()`.
-
-| NOTE: If you need use previous javascript, it is available in selectize-old.js
+Link `selectize.init.js` from **client-side** and `selectize.js` and call somewhere function `selectize()`.
 
 Last step is enable the extension using your neon config
 
 ```
 extensions:
-	selectize: App\Form\Control\SelectizeExtension
+	selectize: Selectize\Form\Control\SelectizeExtension
 ```
 
 ## Default configuration
@@ -116,4 +120,20 @@ array (3)
 	1 => "2"
 	new => array (1)
 		0 => "Third item"
+```
+
+
+#### Disabled items
+In full mode it support disabled items at droplist
+
+```
+array (2)
+    0 => array (3)
+        'id' => 1
+        'name' => "foo"
+        'enabled' => true 
+    1 => array (3)
+        'id' => 2
+        'name' => "bar"
+        'enabled' => false 
 ```

@@ -1,7 +1,7 @@
 {
-	"name": "evosoft/form-selectize",
+	"name": "evosoftcz/form-selectize",
 	"description": "Form extension for Nette framework",
-	"homepage": "https://github.com/evosoft/form-selectize",
+	"homepage": "https://github.com/evosoftcz/form-selectize",
 	"license": "GPL-3.0",
 	"authors": [
 		{

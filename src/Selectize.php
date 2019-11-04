@@ -6,7 +6,7 @@
  * the file LICENSE.md that was distributed with this source code.
  */
 
-namespace App\Form\Control;
+namespace Selecize\Form\Control;
 
 use Nette\Forms\Container;
 use Nette\Forms\Controls\BaseControl;
@@ -19,8 +19,10 @@ use Nette\Utils\Strings;
  * Description of Selectize
  *
  * @author Petr Olišar <petr.olisar@gmail.com>
+ * @author Ondřej Sochůrek <o.sochurek@gmail.com>
  */
-class Selectize extends BaseControl {
+class Selectize extends BaseControl
+{
 
     private $entity;
     private $labelName;
@@ -40,7 +42,8 @@ class Selectize extends BaseControl {
     private $selectizeClass = 'selectize show-hidden-error';
 
 
-    public function __construct($label = null, array $entity = NULL, array $config = NULL) {
+    public function __construct($label = null, array $entity = NULL, array $config = NULL)
+    {
         parent::__construct($label);
         $this->entity = is_null($entity) ? [] : $entity;
         $this->labelName = $label;
@@ -51,7 +54,8 @@ class Selectize extends BaseControl {
     /**
      * @return string
      */
-    public function getSelectizeClass(): string {
+    public function getSelectizeClass(): string
+    {
         return $this->selectizeClass;
     }
 
@@ -68,7 +72,8 @@ class Selectize extends BaseControl {
     /**
      * @return mixed
      */
-    private function getOriginalRules() {
+    private function getOriginalRules()
+    {
         return $this->original_rules;
     }
 
@@ -76,7 +81,8 @@ class Selectize extends BaseControl {
      * @param Rules $original_rules
      * @return Selectize
      */
-    private function setOriginalRules(Rules $original_rules): Selectize {
+    private function setOriginalRules(Rules $original_rules): Selectize
+    {
         $this->original_rules = $original_rules;
         return $this;
     }
@@ -84,9 +90,10 @@ class Selectize extends BaseControl {
 
     /**
      * @param array $options
-     * @return $this
+     * @return Selectize
      */
-    public function setOptions(array $options) {
+    public function setOptions(array $options): Selectize
+    {
         foreach ($options as $key => $value) {
             $this->options[$key] = $value;
         }
@@ -95,9 +102,10 @@ class Selectize extends BaseControl {
 
     /**
      * @param string $mode
-     * @return $this
+     * @return Selectize
      */
-    public function setMode(string $mode) {
+    public function setMode(string $mode): Selectize
+    {
         $this->options['mode'] = $mode;
         return $this;
     }
@@ -106,79 +114,88 @@ class Selectize extends BaseControl {
      * @param bool $create
      * @return $this
      */
-    public function setCreate(bool $create) {
+    public function setCreate(bool $create): Selectize
+    {
         $this->options['create'] = $create;
         return $this;
     }
 
     /**
      * @param int $items
-     * @return $this
+     * @return Selectize
      */
-    public function maxItems(int $items) {
+    public function maxItems(int $items): Selectize
+    {
         $this->options['maxItems'] = $items;
         return $this;
     }
 
     /**
      * @param string $delimiter
-     * @return $this
+     * @return Selectize
      */
-    public function setDelimiter(string $delimiter) {
+    public function setDelimiter(string $delimiter): Selectize
+    {
         $this->options['delimiter'] = $delimiter;
         return $this;
     }
 
     /**
      * @param array $plugins
-     * @return $this
+     * @return Selectize
      */
-    public function setPlugins(array $plugins) {
+    public function setPlugins(array $plugins): Selectize
+    {
         $this->options['plugins'] = $plugins;
         return $this;
     }
 
     /**
      * @param string $valueField
-     * @return $this
+     * @return Selectize
      */
-    public function setValueField(string $valueField) {
+    public function setValueField(string $valueField): Selectize
+    {
         $this->options['valueField'] = $valueField;
         return $this;
     }
 
     /**
      * @param string $labelField
-     * @return $this
+     * @return Selectize
      */
-    public function setLabelField(string $labelField) {
+    public function setLabelField(string $labelField): Selectize
+    {
         $this->options['labelField'] = $labelField;
         return $this;
     }
 
     /**
      * @param array $searchField
-     * @return $this
+     * @return Selectize
      */
-    public function setSearchField(array $searchField) {
+    public function setSearchField(array $searchField): Selectize
+    {
         $this->options['searchField'] = $searchField;
         return $this;
     }
 
     /**
      * @param string $class
-     * @return $this
+     * @return Selectize
      */
-    public function setClass(string $class) {
+    public function setClass(string $class): Selectize
+    {
         $this->options['class'] = $class;
         return $this;
     }
 
     /**
      * @param string $ajaxURL
-     * @return $this
+     * @return Selectize
      */
-    public function setAjaxURL(string $ajaxURL) {
+    public function setAjaxURL(string $ajaxURL): Selectize
+    {
         $this->options['ajaxURL'] = $ajaxURL;
         return $this;
     }
@@ -186,9 +203,10 @@ class Selectize extends BaseControl {
 
     /**
      * @param string $prompt
-     * @return $this
+     * @return Selectize
      */
-    public function setPrompt(string $prompt) {
+    public function setPrompt(string $prompt): Selectize
+    {
         $this->prompt = $prompt;
         return $this;
     }
@@ -198,7 +216,8 @@ class Selectize extends BaseControl {
      * Returns first prompt item?
      * @return mixed
      */
-    public function getPrompt() {
+    public function getPrompt()
+    {
         return $this->prompt;
     }
 
@@ -208,7 +227,8 @@ class Selectize extends BaseControl {
      * @param array $items
      * @return array
      */
-    public function setItems(array $items) {
+    public function setItems(array $items): array
+    {
         return $this->entity = $items;
     }
 
@@ -217,16 +237,17 @@ class Selectize extends BaseControl {
      * Gets items
      * @return array
      */
-    public function getItems() {
+    public function getItems(): array
+    {
         return $this->entity;
     }
 
 
     /**
      * @param mixed $value
-     * @return BaseControl|void
      */
-    public function setValue($value) {
+    public function setValue($value): void
+    {
         if (!is_null($value)) {
             if (is_array($value)) {
                 $i = 0;
@@ -250,14 +271,16 @@ class Selectize extends BaseControl {
     /**
      * @return mixed|null
      */
-    public function getValue() {
+    public function getValue()
+    {
         return @count($this->selectize) ? $this->selectize : NULL; // @ because of php7.2
     }
 
     /**
      *
      */
-    public function loadHttpData(): void {
+    public function loadHttpData(): void
+    {
         if ($this->options['mode'] === 'select') {
             $value = $this->getHttpData(Form::DATA_LINE);
             if ($value === "") {
@@ -272,7 +295,8 @@ class Selectize extends BaseControl {
     /**
      * @return \Nette\Utils\Html|string
      */
-    public function getControl() {
+    public function getControl()
+    {
 
         $this->setOption('rendered', TRUE);
         $name = $this->getHtmlName();
@@ -323,7 +347,8 @@ class Selectize extends BaseControl {
      * @param string|null $value
      * @return array
      */
-    function findActiveValue($array, string $key, ?string $value) {
+    function findActiveValue($array, string $key, ?string $value): array
+    {
         $results = array();
 
         if (is_array($array)) {
@@ -346,7 +371,8 @@ class Selectize extends BaseControl {
      * @param string $val
      * @return array
      */
-    private static function arrayUnshiftAssoc(array &$arr, string $key, string $val) {
+    private static function arrayUnshiftAssoc(array &$arr, string $key, string $val): array
+    {
         $arr = array_reverse($arr, true);
         $arr[$key] = $val;
         return array_reverse($arr, true);
@@ -356,7 +382,8 @@ class Selectize extends BaseControl {
     /**
      *
      */
-    private function prepareData() {
+    private function prepareData(): void
+    {
         $this->selectize = $this->split($this->getHttpData(Form::DATA_LINE));
         $this->selectizeBack = $this->getHttpData(Form::DATA_LINE);
         $iteration = false;
@@ -375,7 +402,8 @@ class Selectize extends BaseControl {
      * @param string|null $selectize
      * @return array
      */
-    private function split(?string $selectize) {
+    private function split(?string $selectize): array
+    {
         $return = Strings::split($selectize, '~' . $this->options['delimiter'] . '\s*~');
         return $return[0] === "" ? [] : $return;
     }
@@ -387,7 +415,8 @@ class Selectize extends BaseControl {
      * @param string $key
      * @return bool
      */
-    private function myInArray(array $array, string $value, string $key) {
+    private function myInArray(array $array, string $value, string $key): bool
+    {
         if (isset($array[$key]) AND $array[$key] == $value) {
             return true;
         }
@@ -406,7 +435,8 @@ class Selectize extends BaseControl {
      * @param string $method
      * @param array  $config
      */
-    public static function register(string $method = 'addSelectize', array $config) {
+    public static function register(string $method = 'addSelectize', array $config): void
+    {
 
         Container::extensionMethod(
             $method,

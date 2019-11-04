@@ -6,7 +6,7 @@
  * the file LICENSE.md that was distributed with this source code.
  */
 
-namespace Selecize\Form\Control;
+namespace Selectize\Form\Control;
 
 use Nette;
 use Nette\PhpGenerator as Code;

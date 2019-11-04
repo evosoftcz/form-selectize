@@ -6,7 +6,7 @@
  * the file LICENSE.md that was distributed with this source code.
  */
 
-namespace App\Form\Control;
+namespace Selecize\Form\Control;
 
 use Nette;
 use Nette\PhpGenerator as Code;
@@ -16,6 +16,7 @@ use Nette\Schema\Expect;
  * Description of ControlsExtension
  *
  * @author Petr Olišar <petr.olisar@gmail.com>
+ * @author Ondřej Sochůrek <o.sochurek@gmail.com>
  */
 class SelectizeExtension extends Nette\DI\CompilerExtension
 {

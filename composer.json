@@ -1,20 +1,24 @@
 {
-	"name": "olicek/form-selectize",
+	"name": "evosoft/form-selectize",
 	"description": "Form extension for Nette framework",
-	"homepage": "https://github.com/Olicek/form-selectize",
+	"homepage": "https://github.com/evosoft/form-selectize",
 	"license": "GPL-3.0",
 	"authors": [
 		{
 			"name": "Petr Olišar",
 			"homepage": "http://olisar.eu"
+		},
+		{
+			"name": "Ondřej Sochůrek",
+			"homepage": "http://evosoft.cz"
 		}
 	],
 	"require": {
-		"php": ">= 5.4.0",
-		"nette/di": ">= 2.2.0",
-		"nette/forms": ">= 2.2.0",
-		"nette/php-generator": ">= 2.2.0",
-		"nette/utils": ">= 2.2.0"
+		"php": ">= 7.2.0",
+		"nette/di": ">= 3.0.0",
+		"nette/forms": ">= 3.0.0",
+		"nette/php-generator": ">= 3.0.0",
+		"nette/utils": ">= 3.0.0"
 		
 	},
 	"autoload": {

@@ -45,7 +45,7 @@ class SelectizeExtension extends Nette\DI\CompilerExtension
     {
 		parent::afterCompile($class);
 		$init = $class->methods['initialize'];
-		$init->addBody('\App\Form\Control\Selectize::register(?, ?);', ['addSelectize', $this->config]);
+		$init->addBody('\Selectize\Form\Control\Selectize::register(?, ?);', ['addSelectize', $this->config]);
 	}
 
 }

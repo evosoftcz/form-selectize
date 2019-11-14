@@ -1258,6 +1258,7 @@
 
 			inputMode         = self.settings.mode;
 			classes           = $input.attr('class') || '';
+			classes = classes.replace("form-control", "");
 
 			$wrapper          = $('<div>').addClass(settings.wrapperClass).addClass(classes).addClass(inputMode);
 			$control          = $('<div>').addClass(settings.inputClass).addClass('items').appendTo($wrapper);

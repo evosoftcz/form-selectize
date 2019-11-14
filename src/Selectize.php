@@ -186,6 +186,7 @@ class Selectize extends BaseControl
      */
     public function setClass(string $class): Selectize
     {
+        $class = str_replace('form-control', '', $class);
         $this->options['class'] = $class;
         return $this;
     }
@@ -311,31 +312,31 @@ class Selectize extends BaseControl
         $disabled = $orig_attributes['disabled'];
         $autocomplete = isset($orig_attributes['autocomplete']) ? $orig_attributes['autocomplete'] : null;
         $rules = isset($orig_attributes['data-nette-rules']) ? $orig_attributes['data-nette-rules'] : null;
-        $class = isset($orig_attributes['class']) ? $orig_attributes['class'] : null;
+        $class = isset($orig_attributes['class']) ? str_replace('form-control', '', $orig_attributes['class']) : null;
 
         if ($this->options['mode'] === 'full') {
 
             return $el->addAttributes(['id' => $this->getHtmlId(),
-                'type' => 'text',
-                'name' => $name,
-                'class' => array(isset($this->options['class']) ? $this->options['class'] : '' . ' ' . $class . ' ' . $this->selectizeClass . ' ' . ' text '),
-                'data-entity' => $this->entity,
-                'data-options' => $this->options,
-                'value' => $this->selectizeBack,
-                'data-nette-rules' => $rules,
-                'required' => $required,
-                'disabled' => $disabled,
-                'autocomplete' => $autocomplete]);
+                                          'type' => 'text',
+                                          'name' => $name,
+                                          'class' => array(isset($this->options['class']) ? $this->options['class'] : '' . ' ' . $class . ' ' . $this->selectizeClass . ' ' . ' text '),
+                                          'data-entity' => $this->entity,
+                                          'data-options' => $this->options,
+                                          'value' => $this->selectizeBack,
+                                          'data-nette-rules' => $rules,
+                                          'required' => $required,
+                                          'disabled' => $disabled,
+                                          'autocomplete' => $autocomplete]);
         } else {
 
             $this->entity = $this->prompt === FALSE ? $this->entity : self::arrayUnshiftAssoc($this->entity, '', $this->translate($this->prompt));
             $x = Helpers::createSelectBox($this->entity, ['selected?' => $this->selectizeBack])
-                ->id($this->getHtmlId())
-                ->name($name)
-                ->data('entity', $this->entity)
-                ->data('options', $this->options)
-                ->addAttributes(parent::getControl()->attrs)
-                ->setValue($this->selectizeBack);
+                        ->id($this->getHtmlId())
+                        ->name($name)
+                        ->data('entity', $this->entity)
+                        ->data('options', $this->options)
+                        ->addAttributes(parent::getControl()->attrs)
+                        ->setValue($this->selectizeBack);
 
             return $x->class(isset($this->options['class']) ? $this->options['class'] : '' . ' ' . $class . ' ' . $this->selectizeClass . ' ');
         }

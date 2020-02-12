@@ -405,6 +405,9 @@ class Selectize extends BaseControl
      */
     private function split(?string $selectize): array
     {
+        if ($selectize === null) {
+            return [];
+        }
         $return = Strings::split($selectize, '~' . $this->options['delimiter'] . '\s*~');
         return $return[0] === "" ? [] : $return;
     }

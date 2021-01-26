@@ -439,9 +439,8 @@ class Selectize extends BaseControl
      * @param string $method
      * @param array  $config
      */
-    public static function register(string $method = 'addSelectize', array $config): void
+    public static function register(string $method = 'addSelectize', array $config = []): void
     {
-
         Container::extensionMethod(
             $method,
             function (
